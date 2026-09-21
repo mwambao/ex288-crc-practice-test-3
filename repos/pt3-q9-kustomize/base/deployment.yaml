@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: report-api}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: report-api}}
+  template:
+    metadata: {labels: {app: report-api}}
+    spec:
+      containers: [{name: report-api, image: registry.access.redhat.com/ubi9/ubi-minimal, command: [sh,-c,'sleep infinity']}]

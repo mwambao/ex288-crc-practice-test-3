@@ -1,0 +1,1 @@
+const http=require('http'); let start=Date.now(); http.createServer((q,r)=>{if(q.url=='/startup') return r.end(Date.now()-start>5000?'ok':'warming'); if(q.url=='/ready') return r.end('ready'); if(q.url=='/live') return r.end('live'); r.end('health-api');}).listen(8080,'0.0.0.0');

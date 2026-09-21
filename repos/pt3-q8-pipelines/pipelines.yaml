@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata: {name: build-task}
+spec:
+  params: [{name: APP, type: string}]
+  steps:
+  - name: build
+    image: registry.redhat.io/openshift4/ose-cli:latest
+    script: |
+      oc start-build $(params.APP) --follow
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata: {name: deploy-task}
+spec:
+  params: [{name: APP, type: string}]
+  steps:
+  - name: deploy
+    image: registry.redhat.io/openshift4/ose-cli:latest
+    script: |
+      oc rollout status deployment/$(params.APP) --timeout=180s
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata: {name: build-pipeline}
+spec:
+  params: [{name: APP, type: string}]
+  tasks:
+  - name: build
+    taskRef: {name: build-task}
+    params: [{name: APP, value: '$(params.APP)'}]
+---
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata: {name: deploy-pipeline}
+spec:
+  params: [{name: APP, type: string}]
+  tasks:
+  - name: deploy
+    taskRef: {name: deploy-task}
+    params: [{name: APP, value: '$(params.APP)'}]

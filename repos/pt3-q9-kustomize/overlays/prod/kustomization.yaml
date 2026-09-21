@@ -1,0 +1,7 @@
+resources: [../../base]
+namePrefix: prod-
+replicas:
+- name: report-api
+  count: 3
+labels:
+- pairs: {environment: production}

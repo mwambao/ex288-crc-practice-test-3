@@ -1,0 +1,8 @@
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+ARG ARTIFACT_URL
+RUN microdnf install -y curl nmap-ncat && microdnf clean all && mkdir -p /opt/app
+RUN test -n "$ARTIFACT_URL" && curl -fsSL "$ARTIFACT_URL" -o /opt/app/banner.txt
+COPY src/ /opt/app/
+WORKDIR /opt/app
+EXPOSE 8080
+CMD ["/bin/sh","-c","while true; do { printf 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n'; cat banner.txt; } | nc -l -p 8080 -q 1; done"]

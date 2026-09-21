@@ -1,0 +1,24 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata: {name: inventory-deploy}
+parameters:
+- {name: APP_NAME, required: true}
+- {name: REPLICAS, value: '2'}
+- {name: NAMESPACE, required: true}
+objects:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata: {name: '${APP_NAME}', labels: {template: inventory}}
+  spec:
+    replicas: ${{REPLICAS}}
+    selector: {matchLabels: {app: '${APP_NAME}'}}
+    template:
+      metadata: {labels: {app: '${APP_NAME}'}}
+      spec:
+        containers:
+        - {name: web, image: 'image-registry.openshift-image-registry.svc:5000/${NAMESPACE}/${APP_NAME}:latest', ports: [{containerPort: 8080}]}
+        - {name: helper, image: registry.access.redhat.com/ubi9/ubi-minimal, command: [sh,-c,'while true; do date; sleep 30; done']}
+- apiVersion: v1
+  kind: Service
+  metadata: {name: '${APP_NAME}'}
+  spec: {selector: {app: '${APP_NAME}'}, ports: [{port: 8080, targetPort: 8080}]}
