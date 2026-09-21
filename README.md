@@ -1,6 +1,6 @@
 # EX288 CRC Practice Test 3
 
-A fresh CRC-compatible practice exam derived from the attached eight-question practice set, but expanded to cover the current published EX288 objectives.
+A fresh CRC-compatible practice exam expanded to cover the current published EX288 objectives.
 
 ## Files
 - `docs/MOCK-EXAM.md` — Q1-Q8 timed exam plus Q9-Q12 supplemental objectives on the same page.
